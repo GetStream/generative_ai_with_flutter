@@ -45,9 +45,9 @@ class _TextGenerationScreenState extends State<TextGenerationScreen> {
           ),
           OutlinedButton(
             onPressed: _generate,
-            child: Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: const Text(
+            child: const Padding(
+              padding: EdgeInsets.all(12.0),
+              child: Text(
                 'Generate',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,

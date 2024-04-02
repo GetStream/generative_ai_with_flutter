@@ -48,7 +48,7 @@ class _ChatScreenState extends State<ChatScreen> {
                             previousValue + (element as TextPart).text),
                   );
                 } else {
-                  return SizedBox();
+                  return const SizedBox();
                 }
               },
               itemCount: _chatSession.history.length,

@@ -28,7 +28,7 @@ class _EmbeddingScreenState extends State<EmbeddingScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Text Generation'),
+        title: const Text('Text Embedding'),
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -38,7 +38,7 @@ class _EmbeddingScreenState extends State<EmbeddingScreen> {
             padding: const EdgeInsets.all(12.0),
             child: TextField(
               controller: _promptController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 border: OutlineInputBorder(),
                 hintText: 'Enter prompt here',
               ),
@@ -46,9 +46,9 @@ class _EmbeddingScreenState extends State<EmbeddingScreen> {
           ),
           OutlinedButton(
             onPressed: _generate,
-            child: Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: const Text(
+            child: const Padding(
+              padding: EdgeInsets.all(12.0),
+              child: Text(
                 'Create embedding',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
