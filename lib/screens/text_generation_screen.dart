@@ -80,8 +80,12 @@ class _ChannelPage extends StatelessWidget {
             child: StreamMessageListView(
               messageBuilder: (context, details, list, def) {
                 return def.copyWith(
-                  reverse: !(details.message.extraData['isGeminiMessage'] as bool? ?? false),
-                  borderRadiusGeometry: BorderRadius.all(Radius.circular(16)),
+                  reverse:
+                      !(details.message.extraData['isGeminiMessage'] as bool? ??
+                          false),
+                  borderRadiusGeometry: const BorderRadius.all(
+                    Radius.circular(16),
+                  ),
                   showUsername: false,
                   showSendingIndicator: false,
                   showTimestamp: false,

@@ -12,11 +12,11 @@ void main() async {
 
   await client.connectUser(
     User(
-      id: 'admin',
-      name: 'admin',
+      id: 'gemini',
+      name: 'gemini',
       role: 'admin',
     ),
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiYWRtaW4ifQ.uQxkDHS7v5YXOxJhF7MAHdjIHBaLEtNsEzXNWikxcRA',
+    'YOUR_USER_TOKEN',
   );
 
   runApp(

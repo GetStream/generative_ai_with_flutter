@@ -24,9 +24,9 @@ class _ChatScreenState extends State<ChatScreen> {
       apiKey: GenAIConfig.geminiApiKey,
     );
     channel = StreamChat.of(context).client.channel(
-      'messaging',
-      id: 'flutter_chat_ai_gen_1',
-    )..watch();
+          'messaging',
+          id: 'flutter_chat_ai_gen_1',
+        )..watch();
     _startChat();
   }
 
@@ -87,7 +87,9 @@ class _ChannelPage extends StatelessWidget {
             child: StreamMessageListView(
               messageBuilder: (context, details, list, def) {
                 return def.copyWith(
-                  reverse: !(details.message.extraData['isGeminiMessage'] as bool? ?? false),
+                  reverse:
+                      !(details.message.extraData['isGeminiMessage'] as bool? ??
+                          false),
                   borderRadiusGeometry: BorderRadius.all(Radius.circular(16)),
                   showUsername: false,
                   showSendingIndicator: false,
