@@ -23,7 +23,7 @@ class _MultimodalScreenState extends State<MultimodalScreen> {
     super.initState();
     _model = GenerativeModel(
       model: 'gemini-pro-vision',
-      apiKey: GenAIConfig.apiKey,
+      apiKey: GenAIConfig.geminiApiKey,
     );
   }
 

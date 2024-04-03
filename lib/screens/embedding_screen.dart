@@ -20,7 +20,7 @@ class _EmbeddingScreenState extends State<EmbeddingScreen> {
     super.initState();
     _model = GenerativeModel(
       model: 'embedding-001',
-      apiKey: GenAIConfig.apiKey,
+      apiKey: GenAIConfig.geminiApiKey,
     );
   }
 

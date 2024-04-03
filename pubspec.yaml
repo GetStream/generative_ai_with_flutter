@@ -38,6 +38,7 @@ dependencies:
   google_generative_ai: ^0.2.2
   image_picker: ^1.0.7
   mime: ^1.0.5
+  stream_chat_flutter: ^7.1.0
 
 dev_dependencies:
   flutter_test:

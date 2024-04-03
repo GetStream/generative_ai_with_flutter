@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:generative_ai_with_flutter/data/config.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
+import 'package:stream_chat_flutter/stream_chat_flutter.dart';
 
 class TextGenerationScreen extends StatefulWidget {
   const TextGenerationScreen({super.key});
@@ -11,15 +12,19 @@ class TextGenerationScreen extends StatefulWidget {
 
 class _TextGenerationScreenState extends State<TextGenerationScreen> {
   late GenerativeModel _model;
-  final TextEditingController _promptController = TextEditingController();
-  String _result = "";
+  late Channel channel;
 
   @override
   void initState() {
     super.initState();
+    channel = StreamChat.of(context).client.channel(
+          'messaging',
+          id: 'flutter_text_ai_gen_1',
+        )..watch();
+
     _model = GenerativeModel(
       model: 'gemini-pro',
-      apiKey: GenAIConfig.apiKey,
+      apiKey: GenAIConfig.geminiApiKey,
     );
   }
 
@@ -29,51 +34,66 @@ class _TextGenerationScreenState extends State<TextGenerationScreen> {
       appBar: AppBar(
         title: const Text('Text Generation'),
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: TextField(
-              controller: _promptController,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Enter prompt here',
-              ),
-            ),
-          ),
-          OutlinedButton(
-            onPressed: _generate,
-            child: const Padding(
-              padding: EdgeInsets.all(12.0),
-              child: Text(
-                'Generate',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18.0,
-                ),
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Text('Result: $_result'),
-          ),
-        ],
+      body: StreamChannel(
+        channel: channel,
+        child: ChannelPage(
+          onMessageSent: _generate,
+        ),
       ),
     );
   }
 
-  void _generate() async {
-    var prompt = _promptController.text.trim();
+  void _generate(Message message) async {
+    String prompt = message.text!;
     if (prompt.isEmpty) return;
 
     final content = [Content.text(prompt)];
 
     final response = await _model.generateContent(content);
-    setState(() {
-      _result = response.text ?? '';
-    });
+    channel.sendMessage(
+      Message(
+        text: response.text,
+        extraData: const {
+          'isGeminiMessage': true,
+        },
+      ),
+    );
+  }
+}
+
+/// Displays the list of messages inside the channel
+class ChannelPage extends StatelessWidget {
+  final ValueChanged<Message> onMessageSent;
+
+  const ChannelPage({
+    super.key,
+    required this.onMessageSent,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: const StreamChannelHeader(),
+      body: Column(
+        children: <Widget>[
+          Expanded(
+            child: StreamMessageListView(
+              messageBuilder: (context, details, list, def) {
+                return def.copyWith(
+                  reverse: !(details.message.extraData['isGeminiMessage'] as bool? ?? false),
+                  borderRadiusGeometry: BorderRadius.all(Radius.circular(16)),
+                  showUsername: false,
+                  showSendingIndicator: false,
+                  showTimestamp: false,
+                );
+              },
+            ),
+          ),
+          StreamMessageInput(
+            onMessageSent: onMessageSent,
+          ),
+        ],
+      ),
+    );
   }
 }
