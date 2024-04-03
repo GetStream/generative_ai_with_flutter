@@ -36,7 +36,7 @@ class _TextGenerationScreenState extends State<TextGenerationScreen> {
       ),
       body: StreamChannel(
         channel: channel,
-        child: ChannelPage(
+        child: _ChannelPage(
           onMessageSent: _generate,
         ),
       ),
@@ -62,10 +62,10 @@ class _TextGenerationScreenState extends State<TextGenerationScreen> {
 }
 
 /// Displays the list of messages inside the channel
-class ChannelPage extends StatelessWidget {
+class _ChannelPage extends StatelessWidget {
   final ValueChanged<Message> onMessageSent;
 
-  const ChannelPage({
+  const _ChannelPage({
     super.key,
     required this.onMessageSent,
   });
@@ -91,6 +91,8 @@ class ChannelPage extends StatelessWidget {
           ),
           StreamMessageInput(
             onMessageSent: onMessageSent,
+            showCommandsButton: false,
+            disableAttachments: true,
           ),
         ],
       ),

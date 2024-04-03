@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
+import 'package:stream_chat_flutter/stream_chat_flutter.dart';
 
 import '../data/config.dart';
 
@@ -13,7 +14,7 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   late GenerativeModel _model;
   late ChatSession _chatSession;
-  final TextEditingController _promptController = TextEditingController();
+  late Channel channel;
 
   @override
   void initState() {
@@ -22,6 +23,10 @@ class _ChatScreenState extends State<ChatScreen> {
       model: 'gemini-pro',
       apiKey: GenAIConfig.geminiApiKey,
     );
+    channel = StreamChat.of(context).client.channel(
+      'messaging',
+      id: 'flutter_chat_ai_gen_1',
+    )..watch();
     _startChat();
   }
 
@@ -31,55 +36,11 @@ class _ChatScreenState extends State<ChatScreen> {
       appBar: AppBar(
         title: const Text('Chat'),
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Expanded(
-            child: ListView.builder(
-              itemBuilder: (context, index) {
-                var item = _chatSession.history.toList()[index];
-                if (item.parts.any((e) => e is TextPart)) {
-                  var textParts = item.parts.where((e) => e is TextPart);
-                  return Text(
-                    textParts.fold(
-                        "",
-                        (String previousValue, Part element) =>
-                            previousValue + (element as TextPart).text),
-                  );
-                } else {
-                  return const SizedBox();
-                }
-              },
-              itemCount: _chatSession.history.length,
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: TextField(
-              controller: _promptController,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Enter prompt here',
-              ),
-            ),
-          ),
-          SafeArea(
-            child: OutlinedButton(
-              onPressed: _generate,
-              child: const Padding(
-                padding: EdgeInsets.all(12.0),
-                child: Text(
-                  'Send',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18.0,
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
+      body: StreamChannel(
+        channel: channel,
+        child: _ChannelPage(
+          onMessageSent: _generate,
+        ),
       ),
     );
   }
@@ -88,13 +49,60 @@ class _ChatScreenState extends State<ChatScreen> {
     _chatSession = _model.startChat();
   }
 
-  void _generate() async {
-    var prompt = _promptController.text.trim();
+  void _generate(Message message) async {
+    var prompt = message.text!;
     if (prompt.isEmpty) return;
 
     final content = Content.text(prompt);
 
-    await _chatSession.sendMessage(content);
+    var response = await _chatSession.sendMessage(content);
+    channel.sendMessage(
+      Message(
+        text: response.text,
+        extraData: const {
+          'isGeminiMessage': true,
+        },
+      ),
+    );
     setState(() {});
+  }
+}
+
+/// Displays the list of messages inside the channel
+class _ChannelPage extends StatelessWidget {
+  final ValueChanged<Message> onMessageSent;
+
+  const _ChannelPage({
+    super.key,
+    required this.onMessageSent,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: const StreamChannelHeader(),
+      body: Column(
+        children: <Widget>[
+          Expanded(
+            child: StreamMessageListView(
+              messageBuilder: (context, details, list, def) {
+                return def.copyWith(
+                  reverse: !(details.message.extraData['isGeminiMessage'] as bool? ?? false),
+                  borderRadiusGeometry: BorderRadius.all(Radius.circular(16)),
+                  showUsername: false,
+                  showSendingIndicator: false,
+                  showTimestamp: false,
+                );
+              },
+            ),
+          ),
+          StreamMessageInput(
+            onMessageSent: onMessageSent,
+            showCommandsButton: false,
+            disableAttachments: true,
+          ),
+        ],
+      ),
+    );
   }
 }
