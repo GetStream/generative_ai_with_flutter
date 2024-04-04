@@ -6,6 +6,11 @@ The purpose of this repository is to demonstrate below:
 
 - Demonstrates [Gemini API](https://ai.google.dev/tutorials/get_started_dart) for Flutter.
 - Integrating chat systems with [Stream Chat Flutter SDK](https://getstream.io/chat/flutter/tutorial/?utm_source=github&utm_medium=referral&utm_content=&utm_campaign=devenossproject) for real-time event handling.
+- Examples for all current capabilities of the google_generative_ai package.
+
+## ✍️ Technical Content
+
+If you're interested in knowing more about Google's Generative AI SDK, check out the following blog post: **[Generative AI with Flutter](https://getstream.io/blog/flutter-generative-ai/)**
 
 ## 🛥 Stream Chat & Video SDK
 
