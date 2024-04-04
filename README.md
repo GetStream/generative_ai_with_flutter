@@ -81,8 +81,6 @@ class GenAIConfig {
 
 15. Add the second key you just retrieved to the `lib/data/config.dart` file:
 
-![gemini](figures/gemini2.png)
-
 ```gradle
 class GenAIConfig {
   // ...
