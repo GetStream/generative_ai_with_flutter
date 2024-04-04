@@ -10,13 +10,14 @@ void main() async {
     logLevel: Level.INFO,
   );
 
+  var token = client.devToken('gemini');
   await client.connectUser(
     User(
       id: 'gemini',
       name: 'gemini',
       role: 'admin',
     ),
-    'YOUR_USER_TOKEN',
+    token.rawValue,
   );
 
   runApp(
