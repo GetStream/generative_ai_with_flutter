@@ -10,7 +10,7 @@ The purpose of this repository is to demonstrate below:
 
 ## ✍️ Technical Content
 
-If you're interested in knowing more about Google's Generative AI SDK, check out the following blog post: **[Generative AI with Flutter](https://getstream.io/blog/flutter-generative-ai/)**
+If you're interested in knowing more about Google's Generative AI SDK, check out the following blog post: **[Generative AI with Flutter](https://getstream.io/blog/generative-ai-flutter/)**
 
 ## 🛥 Stream Chat & Video SDK
 
